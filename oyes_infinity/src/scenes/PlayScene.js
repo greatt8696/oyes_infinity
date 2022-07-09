@@ -8,10 +8,12 @@ class PlayScene extends Phaser.Scene {
     this.config = config;
   }
   create() {
+    this.add
+      .image(this.config.width / 2, this.config.height / 2, "background")
+      .setOrigin(0.5);
     this.score = 0;
     this.player = this.createPlayer();
-    createBG();
-    // this.initCamera(this.player);
+    this.initCamera(this.player);
     // this.createGameEvents();
   }
   update() {
@@ -21,11 +23,6 @@ class PlayScene extends Phaser.Scene {
   createPlayer() {
     // return new Player(this, start.x, start.y);
     return new Player(this, this.config.width / 2, this.config.height / 2);
-  }
-  createBG() {
-    this.add
-      .image(this.config.width / 2, this.config.height / 2, "background")
-      .setOrigin(0.5);
   }
 
   initCamera(followObj) {
