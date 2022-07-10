@@ -1,10 +1,10 @@
-import Phaser from "phaser";
-import PreloadScene from "./scenes/PreloadScene";
-import PlayScene from "./scenes/PlayScene";
-import firebase from "firebase/compat/app";
+import Phaser from 'phaser';
+import PreloadScene from './scenes/PreloadScene';
+import PlayScene from './scenes/PlayScene';
+import firebase from 'firebase/compat/app';
 
-const WIDTH = 900;
-const HEIGHT = 900;
+const WIDTH = innerWidth;
+const HEIGHT = innerHeight;
 
 // 다른 Scene들과 공유할 config
 const SHARED_CONFIG = {
@@ -32,15 +32,15 @@ const config = {
   // 다른 Scene들과 공유할 config 내용을 게임 초기설정값에 적용
   ...SHARED_CONFIG,
 
-  pixcelArt: true,
+  pixcelArt: false,
 
   //확대 설정값
-  zoom: 1.5,
+  zoom: 1,
 
   //물리엔진
   physics: {
     //경량 물리엔진 arcade
-    default: "arcade",
+    default: 'arcade',
 
     //
     arcade: {
