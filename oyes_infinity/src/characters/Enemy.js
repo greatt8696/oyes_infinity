@@ -55,31 +55,20 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  // Enemy is source of the damage for the player
+  deliversHit() {}
+
   takesHit(source) {
-    if (this.hasBeenHit) {
-      return;
-    }
+    source.deliversHit(this);
+    this.health -= source.damage;
 
-    this.health -= source.damage || source.properties.damage || 0;
     if (this.health <= 0) {
-      EventEmitter.emit('PLAYER_LOOSE');
-      return;
+      this.setTint(0xff0000);
+      this.setVelocity(0, -200);
+      this.body.checkCollision.none = true;
+      this.setCollideWorldBounds(false);
     }
-
-    this.hasBeenHit = true;
-    this.bounceOff(source);
-    const hitAnim = this.playDamageTween();
-    this.hp.decrease(this.health);
-
-    source.deliversHit && source.deliversHit(this);
-
-    this.scene.time.delayedCall(1000, () => {
-      this.hasBeenHit = false;
-      hitAnim.stop();
-      this.clearTint();
-    });
   }
-
   update() {
     // console.log(this.getCenter());
     // 플레이어의 좌표를 받아옴

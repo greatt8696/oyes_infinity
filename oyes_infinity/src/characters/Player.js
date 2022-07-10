@@ -82,6 +82,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     });
   }
 
+  onHit(entity, source) {
+    entity.takesHit(source);
+  }
+
   update() {
     const { left, right, up, down } = this.cursors;
     if (left.isDown) {
