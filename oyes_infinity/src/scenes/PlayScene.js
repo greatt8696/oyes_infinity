@@ -39,6 +39,10 @@ class PlayScene extends Phaser.Scene {
     // this.cameras.main.shake(500, 0.01, 0.01); // 카메라 흔드는 효과
     // this.cameras.main.setFollowOffset(-180, -100); // 정중앙 설정
   }
+  
+  onHit(entity, source) {
+    entity.takesHit(source);
+  }
 
   createEnemies() {
     // Enemy를 담을 Phaser Group 을 선언한다. 아직 비어있음

@@ -1,5 +1,5 @@
-import Phaser from 'phaser';
-import EffectManager from '../effects/EffectManager';
+import Phaser from "phaser";
+import EffectManager from "../effects/EffectManager";
 
 class Projectile extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, key) {
@@ -13,22 +13,21 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.traveledDistance = 0;
 
     this.damage = 10;
-    this.cooldown = 300;
+    this.cooldown = 0;
 
     this.effectManager = new EffectManager(this.scene);
     this.body.setSize(120, 120);
     this.setBodySize(120, 120);
-    this.play('crt_atk');
+    // this.play('crt_atk');
     this.setScale(0.5);
   }
 
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
-
     this.traveledDistance += this.body.deltaAbsX();
 
     if (this.isOutOfRange()) {
-      this.body.reset(0, 0);
+      this.body.reset(-1000, -1000);
       this.activateProjectile(false);
       this.traveledDistance = 0;
     }
@@ -42,6 +41,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
       this.speed,
       this.body.velocity
     );
+
     // anim && this.play(anim, true);
   }
 
@@ -49,8 +49,8 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.activateProjectile(false);
     this.traveledDistance = 0;
     const impactPosition = { x: this.x, y: this.y };
-    this.body.reset(0, 0);
-    this.effectManager.playEffectOn('ctr_atk', target, impactPosition);
+    this.body.reset(-1000, -1000);
+    // this.effectManager.playEffectOn('ctr_atk', target, impactPosition);
   }
 
   activateProjectile(isActive) {

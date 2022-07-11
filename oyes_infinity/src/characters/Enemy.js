@@ -1,13 +1,13 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 // import anims from '../mixins/anims';
-import collidable from '../mixins/collidable';
+import collidable from "../mixins/collidable";
 // import initAnimations from '../anims/index';
 
 class Enemy extends Phaser.Physics.Arcade.Sprite {
   //scene : 플레이어를 호출한 scene, x, y: 캐릭터 생성지점
   constructor(scene, x, y) {
     //부모 요소 셋팅
-    super(scene, x, y, 'cat');
+    super(scene, x, y, "cat");
     // 호출한 scene에 enemy sprite 객체를 추가함.
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
@@ -24,7 +24,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
   init() {
     // this.frameMax = 0;
-    this.hp = 100; //enemy hp
+    this.hp = 30; //enemy hp
     this.speed = 15; //enemy 스피드
     this.hasBeenHit = false; //
     this.body.setSize(188, 188);
@@ -34,25 +34,16 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     this.frameLimit = 50;
     this.frameCount = 0;
-    this.play('cat');
+    this.play("cat");
   }
 
   initEvents() {
     // 코어 playScene의 프레임마다 update가 호출되면 자동으로 enemy의 update를 호출함
-    this.scene.events.on('update', this.update, this);
+    this.scene.events.on("update", this.update, this);
   }
 
   handleAttacks() {
-    this.projectiles.fireProjectile(this, 'cat');
-  }
-
-  playDamageTween() {
-    return this.scene.tweens.add({
-      targets: this,
-      duration: 100,
-      repeat: -1,
-      tint: 0xffffff,
-    });
+    this.projectiles.fireProjectile(this, "cat");
   }
 
   // Enemy is source of the damage for the player
@@ -60,15 +51,35 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
   takesHit(source) {
     source.deliversHit(this);
-    this.health -= source.damage;
+    this.hp -= source.damage;
 
-    if (this.health <= 0) {
-      this.setTint(0xff0000);
-      this.setVelocity(0, -200);
+    if (this.hp <= 0) {
+      this.setVelocity(0, 0);
+      this.damageAnim.stop()
       this.body.checkCollision.none = true;
       this.setCollideWorldBounds(false);
+      this.setRespawn();
+      this.play("cat");
+    } else {
+      this.damageAnim = this.playDamageTween();
+      this.play("cat");
     }
+
+    this.scene.time.delayedCall(300, ()=>{
+      this.damageAnim.stop()
+      this.play("cat");
+    })
   }
+
+  playDamageTween() {
+    return this.scene.tweens.add({
+      targets: this,
+      duration: 100,
+      repeat: 3,
+      tint: 0xff0000,
+    });
+  }
+
   update() {
     // console.log(this.getCenter());
     // 플레이어의 좌표를 받아옴
@@ -96,6 +107,40 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.setFlipX(enemyPosition.x < playerPosition.x ? true : false);
       this.frameCount = 0;
     }
+  }
+  setRespawn() {
+    this.init();
+    this.clearTint();
+    // 리스폰위치 변수 선언
+    let x;
+    let y;
+
+    // 상하좌우 고르게 몬스터를 생성하기 위해
+    // selectXY : X축 Y축 랜덤선택
+    const selectXY = Phaser.Math.Between(0, 1) < 0.5 ? true : false;
+
+    // selectSide : X축이면 왼쪽=0 오른쪽=width      Y축이면 위쪽=0 아래쪽=height 랜덤선택
+    const selectSide = Phaser.Math.Between(0, 1) < 0.5 ? true : false;
+
+    if (selectXY) {
+      y = Phaser.Math.Between(0, this.scene.config.height);
+      x = selectSide
+        ? Phaser.Math.Between(0, -500)
+        : Phaser.Math.Between(
+            this.scene.config.width + 0,
+            this.scene.config.width + 500
+          );
+    } else {
+      x = Phaser.Math.Between(0, this.scene.config.width);
+      y = selectSide
+        ? Phaser.Math.Between(0, -500)
+        : Phaser.Math.Between(
+            this.scene.config.height + 0,
+            this.scene.config.height + 500
+          );
+    }
+    this.body.x = x;
+    this.body.y = y;
   }
 }
 
