@@ -10,7 +10,7 @@ const HEIGHT = innerHeight;
 const SHARED_CONFIG = {
   width: WIDTH,
   height: HEIGHT,
-  debug: false,
+  debug: true,
 };
 
 // 다중 Scene 초기화(선언)하기
@@ -32,7 +32,7 @@ const config = {
   // 다른 Scene들과 공유할 config 내용을 게임 초기설정값에 적용
   ...SHARED_CONFIG,
 
-  pixcelArt: false,
+  pixcelArt: true,
 
   //확대 설정값
   zoom: 1,

@@ -34,7 +34,7 @@ class PlayScene extends Phaser.Scene {
   initCamera(followObj) {
     // set camera center
     this.cameras.main.startFollow(followObj); // 카메라를 플레이어에 고정시킴
-    this.cameras.main.shake(500, 0.01, 0.01); // 카메라 흔드는 효과
+    // this.cameras.main.shake(500, 0.01, 0.01); // 카메라 흔드는 효과
     // this.cameras.main.setFollowOffset(-180, -100); // 정중앙 설정
   }
 
