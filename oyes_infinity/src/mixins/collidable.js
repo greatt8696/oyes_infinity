@@ -11,4 +11,11 @@ export default {
     );
     return this;
   },
+  addOverlap(otherGameobject, callback, context) {
+    this.scene.physics.add.overlap(this, otherGameobject, callback, null, context || this);
+    return this;
+  },
+  prevHasHit: null,
+  bodyPositionDifferenceX: 0,
+  prevRay: null,
 };

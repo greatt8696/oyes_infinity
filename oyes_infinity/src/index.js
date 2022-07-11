@@ -10,7 +10,7 @@ const HEIGHT = innerHeight;
 const SHARED_CONFIG = {
   width: WIDTH,
   height: HEIGHT,
-  debug: true,
+  debug: false,
 };
 
 // 다중 Scene 초기화(선언)하기

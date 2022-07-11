@@ -19,7 +19,7 @@ class PlayScene extends Phaser.Scene {
     this.initCamera(this.player);
     this.physics.collide(this.enemies);
 
-    this.enemies.addCollider(this.player.projectiles, this.onHit);
+    this.enemies.addOverlap(this.player.projectiles, this.onHit);
     // this.createGameEvents();
   }
   update() {
