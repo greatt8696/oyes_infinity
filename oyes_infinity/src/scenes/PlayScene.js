@@ -1,17 +1,19 @@
-import Phaser from 'phaser';
-import Player from '../characters/Player';
-import EventEmitter from '../EventEmitter';
-import Enemy from '../characters/Enemy';
-import Enemies from '../groups/Enemies';
-import collidable from '../mixins/collidable';
+import Phaser from "phaser";
+import Player from "../characters/Player";
+import EventEmitter from "../EventEmitter";
+import Enemy from "../characters/Enemy";
+import Enemies from "../groups/Enemies";
+import collidable from "../mixins/collidable";
 
 class PlayScene extends Phaser.Scene {
   constructor(config) {
-    super('PlayScene');
+    super("PlayScene");
     this.config = config;
   }
   create() {
-    this.add.image(this.config.width / 2, this.config.height / 2, 'background');
+    const mapTable = ["forestBG", "desertBG"];
+    const selectMap = Phaser.Math.RND.pick(mapTable);
+    this.add.image(this.config.width / 2, this.config.height / 2, selectMap);
     // .setOrigin(0.5);
     this.score = 0;
     this.player = this.createPlayer();
