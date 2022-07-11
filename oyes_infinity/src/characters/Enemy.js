@@ -2,7 +2,7 @@ import Phaser from "phaser";
 // import anims from '../mixins/anims';
 import collidable from "../mixins/collidable";
 // import initAnimations from '../anims/index';
-
+import HpBar from "../hud/HpBar";
 class Enemy extends Phaser.Physics.Arcade.Sprite {
   //scene : 플레이어를 호출한 scene, x, y: 캐릭터 생성지점
   constructor(scene, x, y) {
@@ -24,17 +24,32 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
   init() {
     // this.frameMax = 0;
-    this.hp = 30; //enemy hp
+    this.hp = 20; //enemy hp
     this.speed = 15; //enemy 스피드
     this.hasBeenHit = false; //
     this.body.setSize(188, 188);
     //Scene의 입력 키보드 선언
     // initAnimations(this.scene.anims);
     this.setOrigin(0.5).setScale(0.3);
-
     this.frameLimit = 50;
     this.frameCount = 0;
     this.play("cat");
+
+    this.hpBar = new HpBar(
+      this.scene,
+      this.body.x ,
+      this.body.y,
+      2,
+      this.hp
+    );
+  }
+
+  handleHasBeenHit() {
+    this.hasBeenHit = true; //
+    this.body.velocity;
+    this.scene.time.delayedCall(1000, () => {
+      this.hasBeenHit = false; //
+    });
   }
 
   initEvents() {
@@ -50,32 +65,39 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   deliversHit() {}
 
   takesHit(source) {
+    if (this.hasBeenHit) return;
     source.deliversHit(this);
     this.hp -= source.damage;
 
     if (this.hp <= 0) {
       this.setVelocity(0, 0);
-      this.damageAnim.stop()
+      // this.setAlpha(1);
+      this.clearTint();
+      this.damageAnim.stop();
       this.body.checkCollision.none = true;
       this.setCollideWorldBounds(false);
       this.setRespawn();
-      this.play("cat");
     } else {
+      this.handleHasBeenHit();
       this.damageAnim = this.playDamageTween();
-      this.play("cat");
+      this.scene.time.delayedCall(300, () => {
+        // this.setAlpha(1);
+        this.clearTint();
+        this.damageAnim.stop();
+      });
     }
-
-    this.scene.time.delayedCall(300, ()=>{
-      this.damageAnim.stop()
-      this.play("cat");
-    })
   }
 
   playDamageTween() {
+    // return this.scene.tweens.add({
+    //   targets: this,
+    // });
     return this.scene.tweens.add({
       targets: this,
-      duration: 100,
-      repeat: 3,
+      duration: 25,
+      repeat: -1,
+      yoyo: true,
+      // alpha: 0,
       tint: 0xff0000,
     });
   }
@@ -110,7 +132,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   }
   setRespawn() {
     this.init();
-    this.clearTint();
+    // this.clearTint();
+
     // 리스폰위치 변수 선언
     let x;
     let y;
@@ -141,6 +164,9 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
     this.body.x = x;
     this.body.y = y;
+
+    this.body.checkCollision.none = false;
+    this.setCollideWorldBounds(true);
   }
 }
 

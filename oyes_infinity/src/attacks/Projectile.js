@@ -46,11 +46,13 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
   }
 
   deliversHit(target) {
-    this.activateProjectile(false);
-    this.traveledDistance = 0;
-    const impactPosition = { x: this.x, y: this.y };
-    this.body.reset(-1000, -1000);
-    // this.effectManager.playEffectOn('ctr_atk', target, impactPosition);
+    if (this.isOutOfRange()) {
+      this.activateProjectile(false);
+      this.traveledDistance = 0;
+      const impactPosition = { x: this.x, y: this.y };
+      this.body.reset(-2000, -2000);
+      // this.effectManager.playEffectOn('ctr_atk', target, impactPosition);
+    }
   }
 
   activateProjectile(isActive) {

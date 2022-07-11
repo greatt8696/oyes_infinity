@@ -1,14 +1,15 @@
-import Phaser from 'phaser';
-import anims from '../mixins/anims';
-import collidable from '../mixins/collidable';
-import initAnimations from '../anims/index';
-import Projectiles from '../attacks/Projectiles';
+import Phaser from "phaser";
+import anims from "../mixins/anims";
+import collidable from "../mixins/collidable";
+import initAnimations from "../anims/index";
+import Projectiles from "../attacks/Projectiles";
+import HpBar from "../hud/HpBar";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   //scene : 플레이어를 호출한 scene, x, y: 캐릭터 생성지점
   constructor(scene, x, y) {
     //부모 요소 셋팅
-    super(scene, x, y, 'cat');
+    super(scene, x, y, "cat");
     this.scene = scene;
     // 호출한 scene에 player sprite 객체를 추가함.
     this.scene.add.existing(this);
@@ -27,26 +28,34 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.hp = 100; //플레이어 hp
     this.speed = 250; //플레이어 스피드
     this.hasBeenHit = false; //
+    this.playerPosition = this.body;
     this.body.setSize(188, 188);
     //Scene의 입력 키보드 선언
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     initAnimations(this.scene.anims);
     this.setOrigin(0.5).setScale(0.5);
-    this.projectiles = new Projectiles(this.scene, 'normal_atk');
-    this.play('cat');
+    this.hpBar = new HpBar(
+      this.scene,
+      this.playerPosition.x + this.width *0.27,
+      this.playerPosition.y + this.height * 0.75,
+      2,
+      this.hp
+    );
+    this.projectiles = new Projectiles(this.scene, "normal_atk");
+    this.play("cat");
     setInterval(() => {
       this.handleAttacks();
     }, 100);
   }
 
   initEvents() {
-    this.scene.events.on('update', this.update, this);
+    this.scene.events.on("update", this.update, this);
   }
 
   handleAttacks() {
     const enemies = this.scene.enemies.getChildren();
     const randEnemy = Phaser.Math.RND.pick(enemies);
-    this.projectiles.fireProjectile(this, 'normal_atk', randEnemy);
+    this.projectiles.fireProjectile(this, "normal_atk", randEnemy);
   }
 
   playDamageTween() {
@@ -64,7 +73,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.health -= source.damage || source.properties.damage || 0;
     if (this.health <= 0) {
-      EventEmitter.emit('PLAYER_LOOSE');
+      EventEmitter.emit("PLAYER_LOOSE");
       return;
     }
 
@@ -77,8 +86,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.scene.time.delayedCall(1000, () => {
       this.hasBeenHit = false;
-      hitAnim.stop();
       this.clearTint();
+      hitAnim.stop();
     });
   }
 
