@@ -29,7 +29,7 @@ class FireSword extends Projectile {
     this.effectManager = new EffectManager(this.scene);
 
     // 투사체의 크기
-    this.setSize(150, 150);
+    this.setSize(300, 300);
   }
 
   // 프레임마다 업데이트되는 대신 호출되는함수

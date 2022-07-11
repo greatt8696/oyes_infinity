@@ -8,6 +8,8 @@ class HpBar {
     this.y = y / scale;
     this.scale = scale;
     this.value = health;
+    this.velocityX = 0;
+    this.velocityY = 0;
 
     this.size = {
       width: 40,
@@ -32,14 +34,14 @@ class HpBar {
   }
 
   redraw(x, y, scale, hp) {
+    // console.log(x, y);
     this.value = hp;
     this.draw(x, y, scale);
   }
 
-  playerMove(velocity) {
-    console.log(velocity.x);
-    this.x -= velocity.x;
-    this.y -= velocity.y;
+  playerMove(player) {
+    this.velocityX = player.body.velocity.x;
+    this.velocityY = player.body.velocity.y;
     this.draw(this.x, this.y, this.scale);
   }
 
@@ -50,10 +52,21 @@ class HpBar {
     const margin = 2;
 
     this.bar.fillStyle(0x000);
-    this.bar.fillRect(x, y, width + margin, height + margin);
+    this.bar.fillRect(
+      x + this.velocityX,
+      y + this.velocityY,
+      width + margin,
+      height + margin
+    );
+    // console.log(this.velocityX);
 
     this.bar.fillStyle(0xffffff);
-    this.bar.fillRect(x + margin, y + margin, width - margin, height - margin);
+    this.bar.fillRect(
+      x + this.velocityX + margin,
+      y + this.velocityY + margin,
+      width - margin,
+      height - margin
+    );
 
     const healthWidth = Math.floor(this.pixelPerHealth * this.value);
 
@@ -65,8 +78,8 @@ class HpBar {
 
     if (healthWidth > 0) {
       this.bar.fillRect(
-        x + margin,
-        y + margin,
+        x + this.velocityX + margin,
+        y + this.velocityY + margin,
         healthWidth - margin,
         height - margin
       );

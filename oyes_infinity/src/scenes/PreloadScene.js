@@ -14,8 +14,8 @@ class PreloadScene extends Phaser.Scene {
     this.load.image('forestBG', 'assets/forestBG.png');
     this.load.image('desertBG', 'assets/desertBG.png');
     this.load.image('player_character', 'assets/player_1/Pink_Monster.png');
-    this.load.image('normal_atk', 'assets/normal_atk.png');
-    this.load.image('crt_atk', 'assets/crt_atk.png');
+    this.load.image('NormalSword', 'assets/normal_atk.png');
+    this.load.image('FireSword', 'assets/crt_atk.png');
 
     this.load.spritesheet(
       'player-1-idle',

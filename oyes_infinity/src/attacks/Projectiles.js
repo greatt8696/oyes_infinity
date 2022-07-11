@@ -1,13 +1,14 @@
-import Phaser from 'phaser';
-import Projectile from './Projectile';
-import { getTimestamp } from '../utils/functions';
+import Phaser from "phaser";
+import Projectile from "./Projectile";
+import { getTimestamp } from "../utils/functions";
+import { getWeaponType } from "./weapon/weaponType";
 
 class Projectiles extends Phaser.Physics.Arcade.Group {
   constructor(scene, key) {
     super(scene.physics.world, scene);
-
+    this.type = getWeaponType(key)
     this.createMultiple({
-      frameQuantity: 25,
+      frameQuantity: this.type.max,
       active: false,
       visible: false,
       key,
@@ -16,7 +17,19 @@ class Projectiles extends Phaser.Physics.Arcade.Group {
 
     this.timeFromLastProjectile = null;
   }
-
+  changeWeapon(key) {
+    console.log(this.type, key);
+    this.type = getWeaponType(key)
+    const children = this.getChildren();
+    children.splice(0, children.length);
+    this.createMultiple({
+      frameQuantity: this.type.max,
+      active: false,
+      visible: false,
+      key,
+      classType: this.type.sword,
+    });
+  }
   fireProjectile(initiator, anim, target) {
     const projectile = this.getFirstDead(false);
 

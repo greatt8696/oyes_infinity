@@ -4,6 +4,7 @@ import collidable from "../mixins/collidable";
 import initAnimations from "../anims/index";
 import Projectiles from "../attacks/Projectiles";
 import HpBar from "../hud/HpBar";
+import { getWeaponType } from "../attacks/weapon/weaponType";
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   //scene : 플레이어를 호출한 scene, x, y: 캐릭터 생성지점
@@ -30,7 +31,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.hasBeenHit = false; //
     this.playerPosition = this.body;
     this.body.setSize(188, 188);
-    this.weapone = "FireSword";
+    this.weapon = "NormalSword"; //
+    this.isChange = false;
     //Scene의 입력 키보드 선언
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     initAnimations(this.scene.anims);
@@ -43,7 +45,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       this.hp
     );
 
-    this.projectiles = new Projectiles(this.scene, `${this.weapone}`);
+    this.projectiles = new Projectiles(this.scene, `${this.weapon}`);
     this.play("cat");
     setInterval(() => {
       this.handleAttacks();
@@ -57,7 +59,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   handleAttacks() {
     const enemies = this.scene.enemies.getChildren();
     const randEnemy = Phaser.Math.RND.pick(enemies);
-    this.projectiles.fireProjectile(this, "normal_atk", randEnemy);
+    this.projectiles.fireProjectile(this, `${this.weapon}`, randEnemy);
   }
 
   playDamageTween() {
@@ -98,21 +100,32 @@ class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    const { left, right, up, down } = this.cursors;
+    const { left, right, up, down, space } = this.cursors;
+    if (space.isDown) {
+      if (!this.isChange) {
+        this.isChange = true;
+        this.weapon =
+          this.weapon === "NormalSword" ? "FireSword" : "NormalSword";
+        console.log(this.weapon);
+        this.projectiles.changeWeapon(this.weapon);
+        setTimeout(() => (this.isChange = false), 1000);
+      }
+    }
     if (left.isDown) {
       // console.log('left');
       this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
       this.setVelocityX(-this.speed);
-      this.hpBar.playerMove({ x: -this.speed });
+      this.hpBar.playerMove(this);
       this.setFlipX(false);
     } else if (right.isDown) {
       // console.log('right');
       this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
       this.setVelocityX(this.speed);
-      this.hpBar.playerMove({ x: this.speed });
+      this.hpBar.playerMove(this);
       this.setFlipX(true);
     } else {
       this.setVelocityX(0);
+      this.hpBar.playerMove(this);
     }
     if (up.isDown) {
       // console.log('up');
