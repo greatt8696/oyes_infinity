@@ -1,16 +1,16 @@
-import Phaser from "phaser";
-import anims from "../mixins/anims";
-import collidable from "../mixins/collidable";
-import initAnimations from "../anims/index";
-import Projectiles from "../attacks/Projectiles";
-import HpBar from "../hud/HpBar";
-import { getWeaponType } from "../attacks/weapon/weaponType";
+import Phaser from 'phaser';
+import anims from '../mixins/anims';
+import collidable from '../mixins/collidable';
+import initAnimations from '../anims/index';
+import Projectiles from '../attacks/Projectiles';
+import HpBar from '../hud/HpBar';
+import { getWeaponType } from '../attacks/weapon/weaponType';
 
 class Player extends Phaser.Physics.Arcade.Sprite {
   //scene : 플레이어를 호출한 scene, x, y: 캐릭터 생성지점
   constructor(scene, x, y) {
     //부모 요소 셋팅
-    super(scene, x, y, "cat");
+    super(scene, x, y, 'cat');
     this.scene = scene;
     // 호출한 scene에 player sprite 객체를 추가함.
     this.scene.add.existing(this);
@@ -31,7 +31,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.hasBeenHit = false; //
     this.playerPosition = this.body;
     this.body.setSize(188, 188);
-    this.weapon = "NormalSword"; //
+    this.weapon = 'NormalSword'; //
     this.isChange = false;
     //Scene의 입력 키보드 선언
     this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -39,21 +39,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.setOrigin(0.5).setScale(0.5);
     this.hpBar = new HpBar(
       this.scene,
-      this.playerPosition.x + this.width * 0.27,
-      this.playerPosition.y + this.height * 0.75,
-      2,
+      this.playerPosition.x,
+      this.playerPosition.y,
+      2.5,
       this.hp
     );
 
     this.projectiles = new Projectiles(this.scene, `${this.weapon}`);
-    this.play("cat");
+    this.play('cat');
     setInterval(() => {
       this.handleAttacks();
     }, 100);
   }
 
   initEvents() {
-    this.scene.events.on("update", this.update, this);
+    this.scene.events.on('update', this.update, this);
   }
 
   handleAttacks() {
@@ -77,7 +77,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.health -= source.damage || source.properties.damage || 0;
     if (this.health <= 0) {
-      EventEmitter.emit("PLAYER_LOOSE");
+      EventEmitter.emit('PLAYER_LOOSE');
       return;
     }
 
@@ -105,39 +105,33 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       if (!this.isChange) {
         this.isChange = true;
         this.weapon =
-          this.weapon === "NormalSword" ? "FireSword" : "NormalSword";
-        console.log(this.weapon);
+          this.weapon === 'NormalSword' ? 'FireSword' : 'NormalSword';
         this.projectiles.changeWeapon(this.weapon);
         setTimeout(() => (this.isChange = false), 1000);
       }
     }
     if (left.isDown) {
-      // console.log('left');
       this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
       this.setVelocityX(-this.speed);
-      this.hpBar.playerMove(this);
       this.setFlipX(false);
     } else if (right.isDown) {
-      // console.log('right');
       this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
       this.setVelocityX(this.speed);
-      this.hpBar.playerMove(this);
       this.setFlipX(true);
     } else {
       this.setVelocityX(0);
-      this.hpBar.playerMove(this);
     }
     if (up.isDown) {
-      // console.log('up');
       this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
       this.setVelocityY(-this.speed);
     } else if (down.isDown) {
-      // console.log('down');
       this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
       this.setVelocityY(this.speed);
     } else {
       this.setVelocityY(0);
     }
+
+    this.hpBar.redraw(this.body.x, this.body.y + this.body.height, 1, this.hp);
   }
 }
 

@@ -1,6 +1,6 @@
-import Phaser from "phaser";
-import EffectManager from "../../effects/EffectManager";
-import Projectile from "../Projectile";
+import Phaser from 'phaser';
+import EffectManager from '../../effects/EffectManager';
+import Projectile from '../Projectile';
 
 class FireSword extends Projectile {
   constructor(scene, x, y, key) {
@@ -50,7 +50,7 @@ class FireSword extends Projectile {
   }
 
   fire(x, y, anim, angle) {
-    console.log("firesword fire@@", this.children);
+    // console.log("firesword fire@@", this.children);
     this.body.reset(x, y);
     this.activateProjectile(true);
     this.scene.physics.velocityFromRotation(
@@ -65,7 +65,7 @@ class FireSword extends Projectile {
   deliversHit(target) {
     this.activateProjectile(false);
     this.traveledDistance = 0;
-    this.body.reset(this.x - 2000, this.y - 2000);
+    this.body.reset(this.x, this.y);
     // this.effectManager.playEffectOn('ctr_atk', target, impactPosition);
   }
 

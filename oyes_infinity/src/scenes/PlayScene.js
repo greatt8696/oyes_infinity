@@ -1,17 +1,17 @@
-import Phaser from "phaser";
-import Player from "../characters/Player";
-import EventEmitter from "../EventEmitter";
-import Enemy from "../characters/Enemy";
-import Enemies from "../groups/Enemies";
-import collidable from "../mixins/collidable";
+import Phaser from 'phaser';
+import Player from '../characters/Player';
+import EventEmitter from '../EventEmitter';
+import Enemy from '../characters/Enemy';
+import Enemies from '../groups/Enemies';
+import collidable from '../mixins/collidable';
 
 class PlayScene extends Phaser.Scene {
   constructor(config) {
-    super("PlayScene");
+    super('PlayScene');
     this.config = config;
   }
   create() {
-    const mapTable = ["forestBG", "desertBG"];
+    const mapTable = ['forestBG', 'desertBG'];
     const selectMap = Phaser.Math.RND.pick(mapTable);
     this.add.image(this.config.width / 2, this.config.height / 2, selectMap);
     // .setOrigin(0.5);
@@ -20,7 +20,6 @@ class PlayScene extends Phaser.Scene {
     this.enemies = this.createEnemies();
     this.initCamera(this.player);
     this.physics.collide(this.enemies);
-
     this.enemies.addOverlap(this.player.projectiles, this.onHit);
     // this.createGameEvents();
   }
@@ -39,7 +38,7 @@ class PlayScene extends Phaser.Scene {
     // this.cameras.main.shake(500, 0.01, 0.01); // 카메라 흔드는 효과
     // this.cameras.main.setFollowOffset(-180, -100); // 정중앙 설정
   }
-  
+
   onHit(entity, source) {
     entity.takesHit(source);
   }
@@ -49,7 +48,7 @@ class PlayScene extends Phaser.Scene {
     const enemies = new Enemies(this);
 
     // 몬스터의 소환
-    const monster_Num = 360;
+    const monster_Num = 2;
     for (let idx = 0; idx < monster_Num; idx++) {
       // 리스폰위치 변수 선언
       let x;

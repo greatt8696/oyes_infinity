@@ -1,5 +1,5 @@
-import Phaser from "phaser";
-import EffectManager from "../effects/EffectManager";
+import Phaser from 'phaser';
+import EffectManager from '../effects/EffectManager';
 
 class Projectile extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, key) {
@@ -12,7 +12,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.maxDistance = 1500;
     this.traveledDistance = 0;
 
-    this.damage = 10;
+    this.damage = 0;
     this.cooldown = 0;
 
     this.effectManager = new EffectManager(this.scene);
@@ -50,7 +50,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
       this.activateProjectile(false);
       this.traveledDistance = 0;
       const impactPosition = { x: this.x, y: this.y };
-      this.body.reset(-2000, -2000);
+      this.body.reset(this.scene.plyer.x, this.scene.plyer.y);
       // this.effectManager.playEffectOn('ctr_atk', target, impactPosition);
     }
   }

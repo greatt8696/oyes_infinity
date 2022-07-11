@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser from 'phaser';
 
 class HpBar {
   constructor(scene, x, y, scale = 1, health) {
@@ -34,15 +34,10 @@ class HpBar {
   }
 
   redraw(x, y, scale, hp) {
-    // console.log(x, y);
     this.value = hp;
-    this.draw(x, y, scale);
-  }
-
-  playerMove(player) {
-    this.velocityX = player.body.velocity.x;
-    this.velocityY = player.body.velocity.y;
-    this.draw(this.x, this.y, this.scale);
+    const posX = x;
+    const posY = y;
+    this.draw(posX, posY, scale);
   }
 
   draw(x, y, scale) {
@@ -52,21 +47,11 @@ class HpBar {
     const margin = 2;
 
     this.bar.fillStyle(0x000);
-    this.bar.fillRect(
-      x + this.velocityX,
-      y + this.velocityY,
-      width + margin,
-      height + margin
-    );
+    this.bar.fillRect(x, y, width + margin, height + margin);
     // console.log(this.velocityX);
 
     this.bar.fillStyle(0xffffff);
-    this.bar.fillRect(
-      x + this.velocityX + margin,
-      y + this.velocityY + margin,
-      width - margin,
-      height - margin
-    );
+    this.bar.fillRect(x + margin, y + margin, width - margin, height - margin);
 
     const healthWidth = Math.floor(this.pixelPerHealth * this.value);
 
@@ -78,14 +63,14 @@ class HpBar {
 
     if (healthWidth > 0) {
       this.bar.fillRect(
-        x + this.velocityX + margin,
-        y + this.velocityY + margin,
+        x + margin,
+        y + margin,
         healthWidth - margin,
         height - margin
       );
     }
 
-    return this.bar.setScrollFactor(0, 0).setScale(scale);
+    return this.bar;
   }
 }
 
