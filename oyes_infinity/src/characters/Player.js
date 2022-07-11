@@ -30,18 +30,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     this.hasBeenHit = false; //
     this.playerPosition = this.body;
     this.body.setSize(188, 188);
+    this.weapone = "FireSword";
     //Scene의 입력 키보드 선언
     this.cursors = this.scene.input.keyboard.createCursorKeys();
     initAnimations(this.scene.anims);
     this.setOrigin(0.5).setScale(0.5);
     this.hpBar = new HpBar(
       this.scene,
-      this.playerPosition.x + this.width *0.27,
+      this.playerPosition.x + this.width * 0.27,
       this.playerPosition.y + this.height * 0.75,
       2,
       this.hp
     );
-    this.projectiles = new Projectiles(this.scene, "normal_atk");
+
+    this.projectiles = new Projectiles(this.scene, `${this.weapone}`);
     this.play("cat");
     setInterval(() => {
       this.handleAttacks();
@@ -101,11 +103,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       // console.log('left');
       this.lastDirection = Phaser.Physics.Arcade.FACING_LEFT;
       this.setVelocityX(-this.speed);
+      this.hpBar.playerMove({ x: -this.speed });
       this.setFlipX(false);
     } else if (right.isDown) {
       // console.log('right');
       this.lastDirection = Phaser.Physics.Arcade.FACING_RIGHT;
       this.setVelocityX(this.speed);
+      this.hpBar.playerMove({ x: this.speed });
       this.setFlipX(true);
     } else {
       this.setVelocityX(0);

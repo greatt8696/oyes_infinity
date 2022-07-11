@@ -21,27 +21,33 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     this.init();
     this.initEvents(this);
+    this.initOnce();
   }
   init() {
     // this.frameMax = 0;
-    this.hp = 20; //enemy hp
+    this.hp = 80; //enemy hp
     this.speed = 15; //enemy 스피드
     this.hasBeenHit = false; //
-    this.body.setSize(188, 188);
     //Scene의 입력 키보드 선언
     // initAnimations(this.scene.anims);
-    this.setOrigin(0.5).setScale(0.3);
     this.frameLimit = 50;
     this.frameCount = 0;
-    this.play("cat");
+    if (this.hpBar) {
+      this.hpBar.redraw(
+        this.body.x,
+        this.body.y + this.body.height,
+        1,
+        this.hp
+      );
+    }
+    this.activateEnemy(true);
+  }
 
-    this.hpBar = new HpBar(
-      this.scene,
-      this.body.x ,
-      this.body.y,
-      2,
-      this.hp
-    );
+  initOnce() {
+    this.body.setSize(188, 188);
+    this.setOrigin(0.5).setScale(0.3);
+    this.hpBar = new HpBar(this.scene, this.body.x, this.body.y, 2, this.hp);
+    this.play("cat");
   }
 
   handleHasBeenHit() {
@@ -68,10 +74,11 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     if (this.hasBeenHit) return;
     source.deliversHit(this);
     this.hp -= source.damage;
+    this.hpBar.decrease(this.hp);
 
     if (this.hp <= 0) {
+      this.activateEnemy(false);
       this.setVelocity(0, 0);
-      // this.setAlpha(1);
       this.clearTint();
       this.damageAnim.stop();
       this.body.checkCollision.none = true;
@@ -129,6 +136,11 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.setFlipX(enemyPosition.x < playerPosition.x ? true : false);
       this.frameCount = 0;
     }
+    this.hpBar.draw(
+       this.body.x,
+       this.body.y + this.body.height,
+      1
+    );
   }
   setRespawn() {
     this.init();
@@ -167,6 +179,11 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     this.body.checkCollision.none = false;
     this.setCollideWorldBounds(true);
+  }
+
+  activateEnemy(isActive) {
+    this.setActive(isActive);
+    this.setVisible(isActive);
   }
 }
 
