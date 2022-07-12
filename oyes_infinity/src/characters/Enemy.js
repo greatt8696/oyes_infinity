@@ -26,7 +26,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   init() {
     // this.frameMax = 0;
     this.hp = 80; //enemy hp
-    this.speed = 15; //enemy 스피드
+    this.speed = 300; //enemy 스피드
     this.hasBeenHit = false; //
     //Scene의 입력 키보드 선언
     // initAnimations(this.scene.anims);
@@ -163,27 +163,27 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     const selectSide = Phaser.Math.Between(0, 1) < 0.5 ? true : false;
 
     if (selectXY) {
-      y = Phaser.Math.Between(0, this.scene.config.height);
+      y = Phaser.Math.Between(-100, this.scene.config.height);
       x = selectSide
-        ? Phaser.Math.Between(0, -500)
+        ? Phaser.Math.Between(-100, -300)
         : Phaser.Math.Between(
-            this.scene.config.width + 0,
-            this.scene.config.width + 500
+            this.scene.config.width + this.scene.player.x + 0,
+            this.scene.config.width + this.scene.player.x + 500
           );
     } else {
-      x = Phaser.Math.Between(0, this.scene.config.width);
+      x = Phaser.Math.Between(-100, this.scene.config.width);
       y = selectSide
-        ? Phaser.Math.Between(0, -500)
+        ? Phaser.Math.Between(-100, -300)
         : Phaser.Math.Between(
-            this.scene.config.height + 0,
-            this.scene.config.height + 500
+            this.scene.config.height + this.scene.player.y + 0,
+            this.scene.config.height + this.scene.player.y + 500
           );
     }
     this.body.x = x;
     this.body.y = y;
 
     this.body.checkCollision.none = false;
-    this.setCollideWorldBounds(true);
+    // this.setCollideWorldBounds(true);
   }
 
   activateEnemy(isActive) {

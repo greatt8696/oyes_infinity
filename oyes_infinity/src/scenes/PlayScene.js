@@ -48,7 +48,7 @@ class PlayScene extends Phaser.Scene {
     const enemies = new Enemies(this);
 
     // 몬스터의 소환
-    const monster_Num = 2;
+    const monster_Num = 500;
     for (let idx = 0; idx < monster_Num; idx++) {
       // 리스폰위치 변수 선언
       let x;

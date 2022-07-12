@@ -12,7 +12,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite {
     this.maxDistance = 1500;
     this.traveledDistance = 0;
 
-    this.damage = 0;
+    this.damage = 30;
     this.cooldown = 0;
 
     this.effectManager = new EffectManager(this.scene);
