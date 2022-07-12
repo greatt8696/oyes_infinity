@@ -26,7 +26,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   init() {
     // this.frameMax = 0;
     this.hp = 80; //enemy hp
-    this.speed = 300; //enemy 스피드
+    this.speed = 50; //enemy 스피드
     this.hasBeenHit = false; //
     //Scene의 입력 키보드 선언
     // initAnimations(this.scene.anims);

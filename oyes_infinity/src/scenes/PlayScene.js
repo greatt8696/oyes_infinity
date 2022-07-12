@@ -35,7 +35,7 @@ class PlayScene extends Phaser.Scene {
   initCamera(followObj) {
     // set camera center
     this.cameras.main.startFollow(followObj); // 카메라를 플레이어에 고정시킴
-    // this.cameras.main.shake(500, 0.01, 0.01); // 카메라 흔드는 효과
+    // this.cameras.main.shake(100, 0.01, 0.01); // 카메라 흔드는 효과
     // this.cameras.main.setFollowOffset(-180, -100); // 정중앙 설정
   }
 
@@ -48,7 +48,7 @@ class PlayScene extends Phaser.Scene {
     const enemies = new Enemies(this);
 
     // 몬스터의 소환
-    const monster_Num = 500;
+    const monster_Num = 150;
     for (let idx = 0; idx < monster_Num; idx++) {
       // 리스폰위치 변수 선언
       let x;
@@ -62,17 +62,17 @@ class PlayScene extends Phaser.Scene {
       const selectSide = Phaser.Math.Between(0, 1) < 0.5 ? true : false;
 
       if (selectXY) {
-        y = Phaser.Math.Between(0, this.config.height);
+        y = Phaser.Math.Between(100, this.config.height);
         x = selectSide
-          ? Phaser.Math.Between(0, -500)
-          : Phaser.Math.Between(this.config.width + 0, this.config.width + 500);
+          ? Phaser.Math.Between(100, -100)
+          : Phaser.Math.Between(this.config.width + 0, this.config.width + 100);
       } else {
-        x = Phaser.Math.Between(0, this.config.width);
+        x = Phaser.Math.Between(100, this.config.width);
         y = selectSide
-          ? Phaser.Math.Between(0, -500)
+          ? Phaser.Math.Between(100, -100)
           : Phaser.Math.Between(
               this.config.height + 0,
-              this.config.height + 500
+              this.config.height + 100
             );
       }
 

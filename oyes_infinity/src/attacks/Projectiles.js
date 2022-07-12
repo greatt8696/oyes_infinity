@@ -6,29 +6,48 @@ import { getWeaponType } from "./weapon/weaponType";
 class Projectiles extends Phaser.Physics.Arcade.Group {
   constructor(scene, key) {
     super(scene.physics.world, scene);
-    this.type = getWeaponType(key)
+    this.type = getWeaponType(key);
     this.createMultiple({
       frameQuantity: this.type.max,
       active: false,
       visible: false,
+      setXY: { x: -5000, y: -5000 },
       key,
       classType: Projectile,
     });
-
     this.timeFromLastProjectile = null;
+    // this.getChildren((child) => {
+    //   child.reset(-5000, -5000);
+    // });
   }
+
   changeWeapon(key) {
     console.log(this.type, key);
-    this.type = getWeaponType(key)
-    const children = this.getChildren();
-    children.splice(0, children.length);
+    this.type = getWeaponType(key);
+    this.clear(false, true);
     this.createMultiple({
       frameQuantity: this.type.max,
       active: false,
+      setXY: { x: -5000, y: -5000 },
       visible: false,
       key,
       classType: this.type.sword,
     });
+
+    if (key === "FireSword") {
+      this.circle = new Phaser.Geom.Circle(
+        this.scene.player.x,
+        this.scene.player.y,
+        220
+      );
+
+      Phaser.Actions.PlaceOnCircle(this.getChildren(), this.circle);
+      this.scene.add.container(
+        this.scene.player.x,
+        this.scene.player.y,
+        this.getChildren()
+      );
+    }
   }
   fireProjectile(initiator, anim, target) {
     const projectile = this.getFirstDead(false);

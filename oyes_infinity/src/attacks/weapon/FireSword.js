@@ -1,6 +1,6 @@
-import Phaser from 'phaser';
-import EffectManager from '../../effects/EffectManager';
-import Projectile from '../Projectile';
+import Phaser from "phaser";
+import EffectManager from "../../effects/EffectManager";
+import Projectile from "../Projectile";
 
 class FireSword extends Projectile {
   constructor(scene, x, y, key) {
@@ -29,7 +29,15 @@ class FireSword extends Projectile {
     this.effectManager = new EffectManager(this.scene);
 
     // 투사체의 크기
-    this.setSize(150, 150);
+    this.setSize(50, 50);
+
+    this.setCollideWorldBounds(false);
+
+    this.center = this.scene.player.body;
+
+    
+
+    this.initEvents();
   }
 
   // 프레임마다 업데이트되는 대신 호출되는함수
@@ -37,20 +45,27 @@ class FireSword extends Projectile {
     super.preUpdate(time, delta);
 
     // 투사체의 이동거리를 누적하여 더함
-    this.traveledDistance += this.body.deltaAbsX();
+    const moveDistance = Math.sqrt(
+      this.body.deltaAbsX() ** 2 + this.body.deltaAbsY() ** 2
+    );
+    this.traveledDistance += moveDistance;
 
     // 현재이동거리가 최대거리를 넘지 않았지 확인
     if (this.isOutOfRange()) {
-      this.body;
       //이동거리를 넘으면 맵좌표 x:-1000, y:-1000로 이동시킴
-      this.body.reset(-1000, -1000);
       this.activateProjectile(false);
+      this.body.reset(0, 0);
       this.traveledDistance = 0;
     }
   }
 
+  initEvents() {
+    // 코어 playScene의 프레임마다 update가 호출되면 자동으로 enemy의 update를 호출함
+    this.scene.events.on("update", this.update, this);
+  }
+  update() {}
+
   fire(x, y, anim, angle) {
-    // console.log("firesword fire@@", this.children);
     this.body.reset(x, y);
     this.activateProjectile(true);
     this.scene.physics.velocityFromRotation(
@@ -65,7 +80,7 @@ class FireSword extends Projectile {
   deliversHit(target) {
     this.activateProjectile(false);
     this.traveledDistance = 0;
-    this.body.reset(this.x, this.y);
+    this.body.reset(0, 0);
     // this.effectManager.playEffectOn('ctr_atk', target, impactPosition);
   }
 
