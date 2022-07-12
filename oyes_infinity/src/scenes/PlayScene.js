@@ -1,17 +1,17 @@
-import Phaser from 'phaser';
-import Player from '../characters/Player';
-import EventEmitter from '../EventEmitter';
-import Enemy from '../characters/Enemy';
-import Enemies from '../groups/Enemies';
-import collidable from '../mixins/collidable';
+import Phaser from "phaser";
+import Player from "../characters/Player";
+import EventEmitter from "../EventEmitter";
+import Enemy from "../characters/Enemy";
+import Enemies from "../groups/Enemies";
+import collidable from "../mixins/collidable";
 
 class PlayScene extends Phaser.Scene {
   constructor(config) {
-    super('PlayScene');
+    super("PlayScene");
     this.config = config;
   }
   create() {
-    const mapTable = ['forestBG', 'desertBG'];
+    const mapTable = ["forestBG", "desertBG"];
     const selectMap = Phaser.Math.RND.pick(mapTable);
     this.add.image(this.config.width / 2, this.config.height / 2, selectMap);
     // .setOrigin(0.5);
@@ -22,9 +22,25 @@ class PlayScene extends Phaser.Scene {
     this.physics.collide(this.enemies);
     this.enemies.addOverlap(this.player.projectiles, this.onHit);
     // this.createGameEvents();
+
+    this.data.set("stage", 1);
+
+    this.data.set("score", 0);
+
+    this.text = this.add.text(50, 50, "", {
+      font: "64px Courier",
+      fill: "#000000",
+    });
+
+    this.text.setText(
+      ["Stage: " + this.data.get("stage"),
+      "Score: " + this.data.get("score")]
+    );
   }
   update() {
-    // console.log(this.enemies);
+    this.text.setText(["Score: " + this.data.get("score")]);
+    // this.text.x += 50;
+    // this.text.y += this.player.y
   }
 
   createPlayer() {
@@ -48,7 +64,7 @@ class PlayScene extends Phaser.Scene {
     const enemies = new Enemies(this);
 
     // 몬스터의 소환
-    const monster_Num = 150;
+    const monster_Num = 600;
     for (let idx = 0; idx < monster_Num; idx++) {
       // 리스폰위치 변수 선언
       let x;

@@ -1,17 +1,18 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 // import anims from '../mixins/anims';
-import collidable from '../mixins/collidable';
+import collidable from "../mixins/collidable";
 // import initAnimations from '../anims/index';
-import HpBar from '../hud/HpBar';
+import HpBar from "../hud/HpBar";
 class Enemy extends Phaser.Physics.Arcade.Sprite {
   //scene : 플레이어를 호출한 scene, x, y: 캐릭터 생성지점
   constructor(scene, x, y) {
     //부모 요소 셋팅
-    super(scene, x, y, 'cat');
+    super(scene, x, y, "cat");
     // 호출한 scene에 enemy sprite 객체를 추가함.
     this.scene.add.existing(this);
     this.scene.physics.add.existing(this);
     this.scene = scene;
+    this.score = this.scene.data
 
     /*  Mixins (재사용 함수 및 요소)
         자주 사용하지만 enemy 오브젝트(클래스)에 
@@ -26,11 +27,12 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
   init() {
     // this.frameMax = 0;
     this.hp = 80; //enemy hp
-    this.speed = 50; //enemy 스피드
+    this.speed = 300; //enemy 스피드
+    this.exp = 10;
     this.hasBeenHit = false; //
     //Scene의 입력 키보드 선언
     // initAnimations(this.scene.anims);
-    this.frameLimit = 50;
+    this.frameLimit = 10;
     this.frameCount = 0;
     if (this.hpBar) {
       this.hpBar.redraw(
@@ -47,7 +49,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.body.setSize(188, 188);
     this.setOrigin(0.5).setScale(0.3);
     this.hpBar = new HpBar(this.scene, this.body.x, this.body.y, 2, this.hp);
-    this.play('cat');
+    this.play("cat");
   }
 
   handleHasBeenHit() {
@@ -60,11 +62,11 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
   initEvents() {
     // 코어 playScene의 프레임마다 update가 호출되면 자동으로 enemy의 update를 호출함
-    this.scene.events.on('update', this.update, this);
+    this.scene.events.on("update", this.update, this);
   }
 
   handleAttacks() {
-    this.projectiles.fireProjectile(this, 'cat');
+    this.projectiles.fireProjectile(this, "cat");
   }
 
   // Enemy is source of the damage for the player
@@ -77,6 +79,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.hpBar.decrease(this.hp);
 
     if (this.hp <= 0) {
+      console.log(this.score);
+      const prev_score = this.score.get("score");
+      const update_score = prev_score + this.exp;
+      this.score.set("score", update_score);
       this.activateEnemy(false);
       this.setVelocity(0, 0);
       this.clearTint();
